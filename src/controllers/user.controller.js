@@ -17,7 +17,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // 1. Get user details from frontend
   const { fullName, email, username, password } = req.body;
-  console.log("Email: ", email);
+  // console.log("Email: ", email);
 
   // 2. Validation - not empty
   if (
@@ -27,7 +27,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // 3. Check if user already exists: username, email
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ email }, { username }],
   });
 
@@ -37,7 +37,17 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // 4. Check for images, check for avatar
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // console.log(req.files);
+
+  let coverImageLocalPath;
+  if (
+    req.files &&
+    Array.isArray(req.files.coverImage) &&
+    req.files.coverImage.length > 0
+  ) {
+    coverImageLocalPath = req.files.coverImage[0].path;
+  }
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar is required");
@@ -63,7 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // 7. Remove password and refresh tokren field from response
   const createdUser = await User.findById(user._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken" // "-" is a shortcut to ensure that password and refresh token will not be go with response
   );
 
   // 8. Check for user creation
