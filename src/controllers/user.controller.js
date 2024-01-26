@@ -199,8 +199,8 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 /*************************************************REFRESH ACCESS TOKEN*************************************************/
-// we need to refresh or renew our access token when the session expires, we can do it by matching the refresh tokens from the user and the token tata is stored in DB
 const refreshAccessToken = asyncHandler(async (req, _) => {
+  // we need to refresh or renew our access token when the session expires, we can do it by matching the refresh tokens from the user and the token tata is stored in DB
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
 
